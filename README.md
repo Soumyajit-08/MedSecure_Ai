@@ -1,6 +1,6 @@
-# MadSecure AI
+# MedSecure AI
 
-MadSecure AI is a comprehensive, AI-powered healthcare security and patient management platform. It integrates advanced machine learning to provide secure data handling, diagnostic assistance, and streamlined clinical workflows.
+MedSecure AI is a comprehensive, AI-powered healthcare security and patient management platform. It integrates advanced machine learning to provide secure data handling, diagnostic assistance, and streamlined clinical workflows.
 
 ## Monorepo Structure
 
@@ -51,7 +51,7 @@ Set values in `backend/.env`:
 
 Set values in `frontend/.env.local`:
 
-- `NEXT_PUBLIC_API_URL` (example: `http://localhost:8090/api/v1`)
+- `NEXT_PUBLIC_API_URL` (example: `https://medsecure-ai-1.onrender.com/api/v1`)
 
 ## API Health
 
@@ -89,7 +89,7 @@ local illness search and fallback predictions:
 1. Import repo in Vercel and choose `frontend` as project root.
 2. Framework preset: Next.js.
 3. Add env var:
-   - `NEXT_PUBLIC_API_URL=https://<your-render-backend-domain>/api/v1`
+   - `NEXT_PUBLIC_API_URL=https://medsecure-ai-1.onrender.com/api/v1`
 4. Deploy.
 
 ## Security Note
