@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: medsecure-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: ALLOW_START_WITHOUT_DB
+        value: false
