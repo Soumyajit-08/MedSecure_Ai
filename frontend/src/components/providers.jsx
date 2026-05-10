@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { AuthProvider } from "@/context/auth-context";
 import { PageProgress } from "./providers/page-progress";
 import { Toaster } from "sonner";
@@ -15,6 +15,34 @@ export function Providers({ children }) {
         defaultOptions: { queries: { staleTime: 20000, refetchOnWindowFocus: false } }
       })
   );
+
+  useEffect(() => {
+    // Run after hydration is complete to prevent text mismatch
+    const savedLang = localStorage.getItem("i18nextLng") || "en";
+    if (savedLang !== "en") {
+      import("@/lib/i18n").then((module) => {
+        const i18n = module.default;
+        i18n.changeLanguage(savedLang);
+      });
+    }
+
+    // Persist language changes
+    const handleLangChange = (lng) => {
+      localStorage.setItem("i18nextLng", lng);
+    };
+
+    import("@/lib/i18n").then((module) => {
+      const i18n = module.default;
+      i18n.on("languageChanged", handleLangChange);
+    });
+
+    return () => {
+      import("@/lib/i18n").then((module) => {
+        const i18n = module.default;
+        i18n.off("languageChanged", handleLangChange);
+      });
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
