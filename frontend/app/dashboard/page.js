@@ -10,7 +10,7 @@ import { SmoothLoader } from "@/components/ui/smooth-loader";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { HealthPredictiveChart } from "@/components/dashboard/health-predictive-chart";
-import { HealthStreaks } from "@/components/dashboard/health-streaks";
+
 import { Activity, Brain, FileText, ShieldCheck, Lock, Eye, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -115,8 +115,35 @@ export default function DashboardPage() {
 
                 <div className="space-y-8">
                   <section>
-                    <h2 className="text-2xl font-black text-white mb-6">Engagement</h2>
-                    <HealthStreaks />
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                       <span className="relative flex h-3 w-3">
+                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+                         <span className="relative inline-flex rounded-full h-3 w-3 bg-lime-500"></span>
+                       </span>
+                       Active Monitoring
+                    </h2>
+                    <div className="rounded-3xl border border-white/5 bg-[#121212] p-6 glass-card-premium relative overflow-hidden group">
+                       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-lime-500 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                       <div className="flex items-start gap-5">
+                         <div className="h-12 w-12 rounded-2xl bg-lime-500/10 flex items-center justify-center shrink-0 border border-lime-500/20">
+                           <ShieldCheck className="h-6 w-6 text-lime-400" />
+                         </div>
+                         <div>
+                            <h4 className="text-white font-bold text-lg mb-1.5 tracking-tight">System Health & Security</h4>
+                            <p className="text-sm text-slate-400 leading-relaxed mb-5">
+                              MedSecure AI is actively securing your medical records. End-to-end encryption is enabled with HIPAA-compliant guardrails.
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                               <span className="px-3 py-1.5 rounded-xl bg-lime-500/10 text-lime-400 text-[10px] font-black uppercase tracking-widest border border-lime-500/20">
+                                 AWS Cloud Hosted
+                               </span>
+                               <span className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
+                                 Encrypted
+                               </span>
+                            </div>
+                         </div>
+                       </div>
+                    </div>
                   </section>
                   <section>
                     <h2 className="text-2xl font-black text-white mb-6">Quick Intelligence</h2>
