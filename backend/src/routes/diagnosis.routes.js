@@ -14,6 +14,8 @@ router.post("/", requireAuth, createPrediction);
 router.get("/", requireAuth, listPredictions);
 router.post("/vision", requireAuth, upload.single("image"), processMedicalVision);
 router.post("/analyze-prescription", requireAuth, upload.single("image"), analyzePrescription);
+router.get("/check-route", (req, res) => res.json({ message: "Diagnosis router internal route working" }));
+router.post("/prescription-analyzer", requireAuth, upload.single("image"), analyzePrescription); // Fallback alias
 
 
 

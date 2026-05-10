@@ -73,7 +73,7 @@ export default function PrescriptionAnalyzerPage() {
 
       <Header />
       
-      <main className="flex-grow px-4 py-12 md:px-12 relative overflow-hidden">
+      <main className="flex-grow px-4 py-12 md:px-12 relative overflow-x-hidden">
         {/* Decorative background */}
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
           <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-lime-500/10 blur-[120px] rounded-full" />
@@ -241,7 +241,7 @@ export default function PrescriptionAnalyzerPage() {
                         <Pill className="h-4 w-4" /> {t("analyzer.pharmacology")}
                       </h2>
                       <div className="grid gap-4">
-                        {result.medicines?.map((med, idx) => (
+                        {Array.isArray(result.medicines) && result.medicines.map((med, idx) => (
                           <div key={idx} className="glass-card-premium p-6 border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-all flex flex-col md:flex-row gap-6 md:items-center">
                             <div className="h-14 w-14 rounded-2xl bg-white/5 flex items-center justify-center text-white shrink-0">
                               <Pill className="h-7 w-7" />
@@ -269,7 +269,7 @@ export default function PrescriptionAnalyzerPage() {
                       </div>
                     </div>
 
-                    {result.referral && result.referral.specialist !== "None" && (
+                    {result.referral && typeof result.referral === "object" && result.referral.specialist && result.referral.specialist !== "None" && (
                       <Card className="glass-card-premium p-8 border-emerald-500/20 bg-emerald-500/[0.02]">
                         <h2 className="text-sm font-black text-emerald-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                           <UserPlus className="h-4 w-4" /> {t("analyzer.referral")}
@@ -290,7 +290,7 @@ export default function PrescriptionAnalyzerPage() {
                     )}
 
                     {/* Metrics/Findings */}
-                    {result.key_metrics && result.key_metrics.length > 0 && (
+                    {Array.isArray(result.key_metrics) && result.key_metrics.length > 0 && (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {result.key_metrics.map((metric, idx) => (
                           <div key={idx} className="glass-card-premium p-4 border-white/5 text-center">

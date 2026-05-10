@@ -1,6 +1,8 @@
 import app from "./app.js";
 import { connectDatabase } from "./config/db.js";
 import { env } from "./config/env.js";
+// Last update: 2026-05-11 02:08
+
 
 // ─── Global Safety Net ─────────────────────────────────────────────────────
 // Prevent unhandled promise rejections from crashing the entire process.

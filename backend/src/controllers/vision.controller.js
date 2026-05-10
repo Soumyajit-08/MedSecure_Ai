@@ -72,7 +72,7 @@ export const analyzePrescription = async (req, res) => {
       },
     };
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" }); // Use Pro for better complex analysis
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Use Flash for better availability
 
     const prompt = `
       Perform a deep clinical analysis of this medical document (prescription, blood test, X-ray, ECG, etc.).

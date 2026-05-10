@@ -11,11 +11,14 @@ import { authApi } from "@/services/api";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
+import { motion } from "framer-motion";
+import { CheckCircle2 } from "lucide-react";
+
 export default function SignupPage() {
   const router = useRouter();
   const { signup } = useAuth();
   
-  const [step, setStep] = useState(1); // 1: Details, 2: OTP Verification
+  const [step, setStep] = useState(1); // 1: Details, 2: OTP Verification, 3: Success
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -25,7 +28,6 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -73,16 +75,17 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
     try {
-      const { data: response } = await authApi.verifyEmail({ email: form.email, otp: otpString });
+      await authApi.verifyEmail({ email: form.email, otp: otpString });
       toast.success("Identity verified. Your patient account has been successfully activated.");
+      setStep(3);
       
-      const { data } = response;
-      if (data?.accessToken) {
-        localStorage.setItem("medsecure_access_token", data.accessToken);
-        localStorage.setItem("medsecure_user", JSON.stringify(data.user));
-      }
-      
-      router.push("/?verified=true");
+      // Clear localStorage just in case authApi sets something, as user wants to go to login
+      localStorage.removeItem("medsecure_access_token");
+      localStorage.removeItem("medsecure_user");
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 3500);
     } catch (err) {
       console.error("❌ Verification Error:", err.response?.data || err.message);
       const msg = err?.response?.data?.message || "Invalid or expired code.";
@@ -101,9 +104,57 @@ export default function SignupPage() {
         
         <div className="w-full max-w-md animate-fade-up">
           <div className="glass-card p-10 border-white/10 shadow-2xl relative overflow-hidden">
-            <div className={`absolute top-0 left-0 w-full h-1 transition-all duration-500 ${step === 1 ? "bg-lime-500" : "bg-emerald-500"}`} />
+            <div className={`absolute top-0 left-0 w-full h-1 transition-all duration-500 ${step === 1 ? "bg-lime-500" : step === 2 ? "bg-emerald-500" : "bg-cyan-500"}`} />
             
-            {step === 1 ? (
+            {step === 3 ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center justify-center py-12"
+              >
+                <div className="relative mb-8">
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: [0, 1.2, 1] }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    className="absolute inset-0 bg-lime-500 rounded-full animate-ping opacity-20"
+                  />
+                  <div className="relative h-28 w-28 bg-gradient-to-br from-lime-500/20 to-emerald-500/20 rounded-full flex items-center justify-center border-2 border-lime-500/50 shadow-[0_0_40px_rgba(132,204,22,0.3)]">
+                    <svg className="h-14 w-14 text-lime-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <motion.path 
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                        strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" 
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <motion.h2 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-3xl font-black text-white mb-3 tracking-tight text-center"
+                >
+                  Account Secured
+                </motion.h2>
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                  className="text-slate-400 text-center text-sm px-4"
+                >
+                  Your patient profile is ready. Redirecting you to secure login...
+                </motion.p>
+                
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 3.5, ease: "linear" }}
+                  className="h-1 bg-gradient-to-r from-lime-500 to-emerald-500 mt-8 rounded-full"
+                />
+              </motion.div>
+            ) : step === 1 ? (
               <>
                 <div className="text-center mb-8">
                   <h1 className="text-3xl font-bold text-white tracking-tight">Create Patient Account</h1>

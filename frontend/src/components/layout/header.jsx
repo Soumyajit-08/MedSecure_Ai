@@ -199,6 +199,19 @@ export function Header() {
 
                         <div className="space-y-1">
                           <button 
+                            onClick={() => {
+                              logout();
+                              router.push("/signup");
+                            }}
+                            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                          >
+                            <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            {mounted ? (t("nav.add_account") !== "nav.add_account" ? t("nav.add_account") : "Add New Account") : "Add New Account"}
+                          </button>
+                          
+                          <button 
                             onClick={handleSwitchAccount}
                             className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
                           >

@@ -12,6 +12,10 @@ import apiRoutes from "./routes/index.js";
 const app = express();
 
 app.use(helmet());
+app.use((req, res, next) => {
+  console.log(`[DEBUG] ${req.method} ${req.url}`);
+  next();
+});
 app.use(
   cors({
     origin: true,

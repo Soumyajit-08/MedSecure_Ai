@@ -101,6 +101,7 @@ const resources = {
         "recent_chats": "Recent Chats",
         "clear_all": "Clear All",
         "no_recent_chats": "No recent chats",
+        "add_account": "Add New Account",
         "switch_account": "Switch Account",
         "logout": "Logout"
       }
@@ -205,6 +206,7 @@ const resources = {
         "recent_chats": "সাম্প্রতিক চ্যাট",
         "clear_all": "সব মুছুন",
         "no_recent_chats": "কোনো সাম্প্রতিক চ্যাট নেই",
+        "add_account": "নতুন অ্যাকাউন্ট যোগ করুন",
         "switch_account": "অ্যাকাউন্ট পরিবর্তন করুন",
         "logout": "লগআউট"
       }
@@ -309,6 +311,7 @@ const resources = {
         "recent_chats": "हाल की चैट",
         "clear_all": "सभी हटाएं",
         "no_recent_chats": "कोई हाल की चैट नहीं",
+        "add_account": "नया खाता जोड़ें",
         "switch_account": "खाता बदलें",
         "logout": "लॉग आउट"
       }
