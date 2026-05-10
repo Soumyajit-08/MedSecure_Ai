@@ -4,11 +4,19 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useEffect, useState } from "react";
+
 export function FloatingChatbot() {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // Hide the floating button if we are already on the chatbot page
-  if (pathname === "/chatbot") return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide the floating button if we are already on the chatbot page or not mounted
+  if (!mounted || pathname === "/chatbot") return null;
+
 
   return (
     <div className="fixed bottom-32 md:bottom-6 right-6 z-[60]">

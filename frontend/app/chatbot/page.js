@@ -10,13 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Header } from "@/components/layout/header";
 
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 import { SmoothLoader } from "@/components/ui/smooth-loader";
 import { BodyMap } from "@/components/chatbot/body-map";
+import { ProtectedRoute } from "@/components/ui/protected-route";
+import { useTranslation } from "react-i18next";
 
 function ChatbotContent() {
+
   const searchParams = useSearchParams();
   const initialMessage = searchParams.get("message") || "";
   const { user, loading } = useAuth();
+  const { t } = useTranslation();
 
   const [message, setMessage] = useState(initialMessage);
   const [messages, setMessages] = useState([]);
@@ -36,18 +42,35 @@ function ChatbotContent() {
     }
   };
 
+  const speak = (text) => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const chat = useMutation({
     mutationFn: (payload) => chatbotApi.chat(payload),
     onSuccess: (response) => {
+      const botResponse = response.data.data.response;
+      const firstName = user?.fullName?.split(" ")[0] || "Patient";
       setMessages((prev) => [
         ...prev,
         {
           role: "bot",
-          text: response.data.data.response,
+          text: botResponse,
           doctorRecommendation: response.data.data.doctorRecommendation
         }
       ]);
+      speak(botResponse);
+      toast.success(`${firstName}, clinical analysis is complete. Review the summary below.`);
     },
+
     onError: (err) => {
       console.error("Chat error:", err);
       const status = err?.response?.status;
@@ -208,17 +231,19 @@ function ChatbotContent() {
   if (loading) return <SmoothLoader fullPage text="Securing session..." />;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <ProtectedRoute message="AI Clinical Consultation requires an active patient session.">
+      <div className="min-h-screen flex flex-col">
+
       <Header />
       <main className="flex-grow px-4 py-8 text-slate-100 md:px-8">
         <div className="mx-auto max-w-5xl">
           <section className="mb-8 animate-fade-up">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">AI Clinical Assistant</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">{t("chatbot.badge")}</p>
             <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">
-              Medical AI Consultation
+              {t("chatbot.title")}
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-400">
-              Describe your symptoms or ask clinical questions. Your consultation is encrypted and securely stored to your patient profile.
+              {t("chatbot.desc")}
             </p>
           </section>
 
@@ -226,7 +251,7 @@ function ChatbotContent() {
             <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 flex items-center gap-3">
               <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
               <p className="text-sm text-amber-200/80">
-                Please sign in to preserve your consultation history and receive personalised clinical guidance.
+                {t("chatbot.login_warning")}
               </p>
             </div>
           )}
@@ -245,7 +270,7 @@ function ChatbotContent() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
                   </div>
-                  <p className="text-slate-400 mb-6">How may I assist you today?</p>
+                  <p className="text-slate-400 mb-6">{t("chatbot.greeting")}</p>
                   <div className="w-full max-w-[280px] animate-fade-in [animation-delay:400ms]">
                     <BodyMap onSelectPart={(label) => setMessage(`I have an issue with my ${label}. `)} />
                   </div>
@@ -257,7 +282,7 @@ function ChatbotContent() {
                   className={`flex flex-col ${item.role === "user" ? "items-end" : "items-start"} animate-fade-in`}
                 >
                   <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1 px-2">
-                    {item.role === "user" ? "You" : "MedSecure_Ai"}
+                    {item.role === "user" ? t("chatbot.you") : t("chatbot.bot")}
                   </p>
                   <div
                     className={`max-w-[92%] rounded-2xl px-5 py-3 text-sm leading-7 ${
@@ -272,14 +297,14 @@ function ChatbotContent() {
                   {item.role === "bot" && item.doctorRecommendation && (
                     <div className="mt-3 w-full max-w-[92%] rounded-2xl border border-lime-400/20 bg-lime-400/5 p-4 text-sm text-slate-200">
                       <div className="flex flex-col gap-1">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-lime-300">Specialist Recommendation</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-lime-300">{t("chatbot.recommendation")}</p>
                         <h3 className="text-base font-bold text-white">{item.doctorRecommendation.specialist}</h3>
                         <p className="leading-6 text-slate-300">{item.doctorRecommendation.reason}</p>
                         <p className="mt-1 text-xs leading-5 text-amber-200">{item.doctorRecommendation.urgency}</p>
                       </div>
 
                       <div className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Medication Guidance</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">{t("chatbot.medication")}</p>
                         <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-300">
                           {item.doctorRecommendation.medicineGuidance?.map((guidance) => (
                             <li key={guidance}>- {guidance}</li>
@@ -293,7 +318,7 @@ function ChatbotContent() {
                           onClick={requestDoctorLocation}
                           className="h-10 rounded-xl bg-lime-600 px-4 text-xs font-bold hover:bg-lime-500"
                         >
-                          Share My Location
+                          {t("chatbot.share_location")}
                         </Button>
 
                         {doctorLocation && (
@@ -304,7 +329,7 @@ function ChatbotContent() {
                               rel="noreferrer"
                               className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-white transition hover:bg-white/10"
                             >
-                              Find Specialists Within 20 km
+                              {t("chatbot.find_specialists")}
                             </a>
                             <a
                               href={buildDoctorMapUrl(item.doctorRecommendation, "directions")}
@@ -312,7 +337,7 @@ function ChatbotContent() {
                               rel="noreferrer"
                               className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/5 px-4 text-xs font-bold text-white transition hover:bg-white/10"
                             >
-                              Get Directions
+                              {t("chatbot.directions")}
                             </a>
                           </>
                         )}
@@ -329,7 +354,7 @@ function ChatbotContent() {
               {/* Thinking Indicator */}
               {chat.isPending && (
                 <div className="flex flex-col items-start animate-fade-in">
-                  <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1 px-2">MedSecure_Ai</p>
+                  <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1 px-2">{t("chatbot.bot")}</p>
                   <div className="bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-slate-400 flex items-center gap-4 min-w-[200px] relative overflow-hidden group">
                     <div className="relative h-6 w-12 shrink-0">
                       <svg viewBox="0 0 50 20" className="h-full w-full">
@@ -344,7 +369,7 @@ function ChatbotContent() {
                         />
                       </svg>
                     </div>
-                    <span className="shimmer-text">Analysing your clinical query...</span>
+                    <span className="shimmer-text">{t("chatbot.analyzing")}</span>
                     
                     {/* Scanning line effect */}
                     <motion.div 
@@ -366,7 +391,7 @@ function ChatbotContent() {
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
-                Scroll to latest
+                {t("chatbot.scroll")}
               </button>
             )}
 
@@ -399,7 +424,7 @@ function ChatbotContent() {
                     onKeyDown={(event) => {
                       if (event.key === "Enter") send();
                     }}
-                    placeholder={isListening ? "Listening — please speak now..." : "Describe your symptoms or ask a clinical question..."}
+                    placeholder={isListening ? t("chatbot.listening") : t("chatbot.input_placeholder")}
                     className="bg-white/5 border-white/10 py-7 pl-14 pr-12 focus:border-lime-500/50 rounded-2xl"
                   />
                   
@@ -448,8 +473,10 @@ function ChatbotContent() {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   );
 }
+
 
 export default function ChatbotPage() {
   return (

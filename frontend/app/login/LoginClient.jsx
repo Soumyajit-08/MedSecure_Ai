@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Header } from "@/components/layout/header";
 import { authApi } from "@/services/api";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,14 +22,18 @@ export default function LoginPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const onLoginSubmit = async (event) => {
     event.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await login(email, password);
-      toast.success("Welcome back to MedSecure AI. Your session is now active.");
+      const user = await login(email, password);
+      const firstName = user?.fullName?.split(" ")[0] || "Patient";
+      toast.success(`Welcome back, ${firstName}. Your secure clinical session is now active.`);
+
       router.push("/");
     } catch (err) {
       if (err?.response?.status === 403) {
@@ -70,10 +76,12 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      await authApi.verifyEmail({ email, otp: otpString });
-      toast.success("Email verified successfully. You may now access the platform.");
+      const response = await authApi.verifyEmail({ email, otp: otpString });
+      const firstName = response.data.data.user?.fullName?.split(" ")[0] || "Patient";
+      toast.success(`Welcome to MedSecure AI, ${firstName}. Your identity has been successfully verified.`);
       router.push("/?verified=true");
     } catch (err) {
+
       setError(err?.response?.data?.message || "Invalid or expired code.");
     } finally {
       setLoading(false);
@@ -131,15 +139,25 @@ export default function LoginPage() {
                       <label className="text-xs font-bold uppercase tracking-widest text-lime-400">Password</label>
                       <Link href="#" className="text-xs text-slate-500 hover:text-lime-400 transition-colors">Forgot password?</Link>
                     </div>
-                    <Input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      className="bg-white/5 border-white/10 py-6 focus:border-lime-400/50 transition-all rounded-xl"
-                    />
+                    <div className="relative group">
+                      <Input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        required
+                        className="bg-white/5 border-white/10 py-6 pr-12 focus:border-lime-400/50 transition-all rounded-xl w-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-lime-400 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
+
 
                   {error && (
                     <div className={`p-4 rounded-xl text-sm ${error.includes("verified") ? "bg-amber-500/10 border border-amber-500/20 text-amber-400" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>

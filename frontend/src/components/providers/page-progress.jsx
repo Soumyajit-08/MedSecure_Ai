@@ -7,12 +7,19 @@ import { usePathname, useSearchParams } from "next/navigation";
  * A smooth top progress bar that activates during route changes.
  */
 export function PageProgress() {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     // Start loading
     setVisible(true);
     setProgress(30);

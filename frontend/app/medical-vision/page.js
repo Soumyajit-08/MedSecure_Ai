@@ -9,6 +9,8 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { ProtectedRoute } from "@/components/ui/protected-route";
+
 export default function MedicalVisionPage() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -63,7 +65,9 @@ export default function MedicalVisionPage() {
   const result = analyzeMutation.data?.data?.data;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#181818]">
+    <ProtectedRoute message="Clinical vision scanning requires authentication to protect your health data.">
+      <div className="min-h-screen flex flex-col bg-[#181818]">
+
       <Header />
       <main className="flex-grow px-4 py-12 md:px-8">
         <div className="mx-auto max-w-6xl">
@@ -238,5 +242,7 @@ export default function MedicalVisionPage() {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   );
 }
+

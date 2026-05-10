@@ -34,8 +34,11 @@ export const reportsApi = {
 };
 
 export const visionApi = {
-  analyze: (formData) => apiClient.post("/diagnosis/vision", formData)
+  analyze: (formData) => apiClient.post("/predictions/vision", formData),
+  analyzePrescription: (formData) => apiClient.post("/predictions/analyze-prescription", formData)
 };
+
+
 
 export const analyticsApi = {
   admin: () => apiClient.get("/analytics/admin")

@@ -13,9 +13,17 @@ const links = [
   { href: "/reports", label: "Reports" }
 ];
 
+import { useEffect, useState } from "react";
+
 export function AppShell({ title, children }) {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-transparent text-slate-100">
@@ -35,8 +43,9 @@ export function AppShell({ title, children }) {
                 href={link.href}
                 className={cn(
                   "block rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-white/[0.04] hover:text-white",
-                  pathname === link.href && "bg-lime-500/10 text-lime-200 ring-1 ring-lime-400/20"
+                  mounted && pathname === link.href && "bg-lime-500/10 text-lime-200 ring-1 ring-lime-400/20"
                 )}
+
               >
                 {link.label}
               </Link>

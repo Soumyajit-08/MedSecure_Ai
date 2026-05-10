@@ -4,6 +4,10 @@ import { Footer } from "@/components/layout/footer";
 import { CursorSpotlight } from "@/components/layout/cursor-spotlight";
 import { EntranceReveal } from "@/components/ui/entrance-reveal";
 import { FloatingChatbot } from "@/components/layout/floating-chatbot";
+import { BottomNav } from "@/components/layout/bottom-nav";
+
+
+
 
 export const metadata = {
   title: "MedSecure AI - Secure Healthcare Platform",
@@ -36,13 +40,20 @@ export default function RootLayout({ children }) {
         <EntranceReveal />
         <Providers>
           <CursorSpotlight />
-          <div className="flex-grow relative z-10">
+          <div className="flex-grow relative z-10 pt-24">
             {children}
           </div>
+
+
           <FloatingChatbot />
+          <BottomNav />
           <Footer />
+
+
+
         </Providers>
       </body>
     </html>
   );
 }
+

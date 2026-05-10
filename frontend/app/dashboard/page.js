@@ -9,10 +9,16 @@ import { Button } from "@/components/ui/button";
 import { SmoothLoader } from "@/components/ui/smooth-loader";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { HealthPredictiveChart } from "@/components/dashboard/health-predictive-chart";
+import { HealthStreaks } from "@/components/dashboard/health-streaks";
+import { Activity, Brain, FileText, ShieldCheck, Lock, Eye, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const [activeTab, setActiveTab] = useState("overview");
 
   const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
     queryKey: ["dashboard-stats"],
@@ -26,255 +32,235 @@ export default function DashboardPage() {
 
   const stats = dashboardData?.data?.data?.stats || { totalDiagnoses: 0, totalReports: 0, activeMeds: 0 };
   const medications = dashboardData?.data?.data?.activeMedications || [];
-  const diagnoses = dashboardData?.data?.data?.recentDiagnoses || [];
-  const reports = dashboardData?.data?.data?.recentReports || [];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0a]">
       <Header />
       
-      <main className="flex-grow px-4 py-8 md:px-12 lg:py-12">
-        <div className="mx-auto max-w-7xl">
+      <main className="flex-grow px-4 py-8 md:px-12 lg:py-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-lime-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-500/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2" />
+
+        <div className="mx-auto max-w-7xl relative z-10">
           {/* Welcome Header */}
           <section className="mb-12 animate-fade-up">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">Patient Health Overview</p>
-                <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">
-                  Good to have you back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-500">{user?.fullName?.split(" ")[0]}</span>
+                <p className="text-sm font-bold uppercase tracking-[0.3em] text-lime-400 mb-2">{t('dashboard.intelligence')}</p>
+                <h1 className="text-4xl font-black text-white md:text-6xl tracking-tight">
+                  {t('dashboard.welcome')}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">{user?.fullName?.split(" ")[0]}</span>
                 </h1>
-                <p className="mt-4 text-slate-400 max-w-xl">
-                  Your centralised health overview. Monitor active prescriptions, review AI consultation history, and manage your medical records securely.
+                <p className="mt-6 text-lg text-slate-400 max-w-2xl leading-relaxed">
+                  {t('dashboard.portal_desc')}
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <StatCard label="Active Prescriptions" value={stats.activeMeds} icon="💊" color="lime" />
-            <StatCard label="AI Consultations" value={stats.totalDiagnoses} icon="🧠" color="emerald" />
-            <StatCard label="Medical Reports" value={stats.totalReports} icon="📄" color="blue" />
-            <StatCard label="Data Security" value="Active" icon="🛡️" color="indigo" />
+          {/* Navigation Tabs */}
+          <div className="flex gap-4 mb-8 border-b border-white/10 pb-4 overflow-x-auto">
+            <TabButton active={activeTab === "overview"} onClick={() => setActiveTab("overview")} label="Overview" />
+            <TabButton active={activeTab === "analytics"} onClick={() => setActiveTab("analytics")} label="Health Analytics" />
+            <TabButton active={activeTab === "security"} onClick={() => setActiveTab("security")} label="Security & Privacy" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content Area */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Active Medications */}
-              <section>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <span className="h-8 w-1 bg-lime-500 rounded-full" />
-                    Active Prescription Schedule
-                  </h2>
-                  <Button variant="outline" className="text-xs border-white/10 text-slate-400 hover:text-white">View All Medications</Button>
-                </div>
-                
-                <div className="grid gap-4">
-                  {medications.length > 0 ? (
-                    medications.map((med, idx) => (
-                      <MedicationCard key={idx} med={med} />
-                    ))
-                  ) : (
-                    <EmptyState 
-                      title="No active prescriptions on record" 
-                      description="Use Medical Vision to scan your prescription and automatically add medications to your profile." 
-                      actionText="Scan Prescription"
-                      actionLink="/medical-vision"
-                    />
-                  )}
-                </div>
-              </section>
+          {activeTab === "overview" && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-12"
+            >
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard label={t('dashboard.stats.prescriptions')} value={stats.activeMeds} icon={<Activity className="h-5 w-5" />} color="lime" />
+                <StatCard label={t('dashboard.stats.ai_insights')} value={stats.totalDiagnoses} icon={<Brain className="h-5 w-5" />} color="emerald" />
+                <StatCard label={t('dashboard.stats.reports')} value={stats.totalReports} icon={<FileText className="h-5 w-5" />} color="cyan" />
+                <StatCard label={t('dashboard.stats.security')} value="HIPAA" icon={<ShieldCheck className="h-5 w-5" />} color="indigo" />
+              </div>
 
-              {/* Health Trends Chart */}
-              <section>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <span className="h-8 w-1 bg-blue-500 rounded-full" />
-                    Health Activity Trends
-                  </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-8">
+                  <section>
+                    <h2 className="text-2xl font-black text-white flex items-center gap-3 mb-6">
+                      <span className="h-1.5 w-6 bg-lime-500 rounded-full" />
+                      {t('dashboard.charts.predictive_health')}
+                    </h2>
+                    <HealthPredictiveChart />
+                  </section>
+
+                  <section>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                        <span className="h-1.5 w-6 bg-emerald-500 rounded-full" />
+                        {t('dashboard.medications.title')}
+                      </h2>
+                      <Button variant="ghost" className="text-xs text-slate-500 hover:text-white uppercase tracking-widest font-bold">
+                        {t('dashboard.medications.history')}
+                      </Button>
+                    </div>
+                    <div className="grid gap-4">
+                      {medications.length > 0 ? (
+                        medications.map((med, idx) => <MedicationCard key={idx} med={med} />)
+                      ) : (
+                        <EmptyState 
+                          title={t('dashboard.medications.empty')}
+                          description={t('dashboard.medications.empty_desc')}
+                          actionText={t('dashboard.medications.start_scan')}
+                          actionLink="/medical-vision"
+                        />
+                      )}
+                    </div>
+                  </section>
                 </div>
-                <Card className="glass-card p-6 border-white/5 bg-white/[0.01] h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={[
-                        { name: 'Mon', value: 400 },
-                        { name: 'Tue', value: 300 },
-                        { name: 'Wed', value: 600 },
-                        { name: 'Thu', value: 800 },
-                        { name: 'Fri', value: 500 },
-                        { name: 'Sat', value: 900 },
-                        { name: 'Sun', value: 700 },
-                      ]}
-                    >
-                      <defs>
-                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#84cc16" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#84cc16" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                      <XAxis dataKey="name" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
-                      <YAxis hide />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#111', border: '1px solid #ffffff10', borderRadius: '12px', fontSize: '12px' }}
-                        itemStyle={{ color: '#84cc16' }}
-                      />
-                      <Area type="monotone" dataKey="value" stroke="#84cc16" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+
+                <div className="space-y-8">
+                  <section>
+                    <h2 className="text-2xl font-black text-white mb-6">Engagement</h2>
+                    <HealthStreaks />
+                  </section>
+                  <section>
+                    <h2 className="text-2xl font-black text-white mb-6">Quick Intelligence</h2>
+                    <div className="grid gap-4">
+                      <ActionCard title={t('dashboard.actions.consultation')} desc={t('dashboard.actions.consultation_desc')} link="/chatbot" icon="🧠" gradient="from-lime-600 to-emerald-600" />
+                      <ActionCard title={t('dashboard.actions.analyzer')} desc={t('dashboard.actions.analyzer_desc')} link="/prescription-analyzer" icon="📄" gradient="from-blue-600 to-indigo-600" />
+                      <ActionCard title={t('dashboard.actions.vision')} desc={t('dashboard.actions.vision_desc')} link="/medical-vision" icon="👁️" gradient="from-emerald-600 to-teal-600" />
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "analytics" && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+              <h2 className="text-3xl font-black text-white">Advanced Health Analytics</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card className="p-6 glass-card border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Vitals Tracking</h3>
+                  <div className="h-64 bg-white/5 rounded-2xl flex items-center justify-center italic text-slate-500">
+                    Detailed vitals visualization coming soon
+                  </div>
                 </Card>
-              </section>
+                <Card className="p-6 glass-card border-white/10">
+                  <h3 className="text-lg font-bold text-white mb-4">Risk Assessment</h3>
+                  <div className="h-64 bg-white/5 rounded-2xl flex items-center justify-center italic text-slate-500">
+                    AI-driven risk assessment model visualization
+                  </div>
+                </Card>
+              </div>
+            </motion.div>
+          )}
 
-              {/* Recent Diagnoses Timeline */}
-              <section>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <span className="h-8 w-1 bg-emerald-500 rounded-full" />
-                    AI Consultation History
-                  </h2>
-                </div>
-                
-                <div className="space-y-4">
-                  {diagnoses.length > 0 ? (
-                    diagnoses.map((diag, idx) => (
-                      <DiagnosisTimelineItem key={idx} diagnosis={diag} />
-                    ))
-                  ) : (
-                    <EmptyState 
-                      title="No consultation records found" 
-                      description="Begin a consultation with our AI Clinical Assistant to generate your first medical analysis and build your health history." 
-                      actionText="Start Consultation"
-                      actionLink="/chatbot"
-                    />
-                  )}
-                </div>
-              </section>
-            </div>
+          {activeTab === "security" && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
+              <h2 className="text-3xl font-black text-white mb-8">Security & Privacy Controls</h2>
+              <div className="grid gap-6">
+                <SecurityOption icon={<Lock className="h-6 w-6 text-indigo-400" />} title="Encryption Standards" desc="Your data is encrypted using AES-256 at rest and TLS 1.3 in transit." status="Active" />
+                <SecurityOption icon={<ShieldCheck className="h-6 w-6 text-lime-400" />} title="HIPAA Compliance" desc="MedSecure AI adheres to rigorous HIPAA standards for health data privacy." status="Verified" />
+                <SecurityOption icon={<Eye className="h-6 w-6 text-cyan-400" />} title="Access Logs" desc="Monitor when and where your health records were accessed." button="View Logs" />
+                <SecurityOption icon={<Globe className="h-6 w-6 text-emerald-400" />} title="Data Residency" desc="Your health data is stored in secure regional data centers." status="Global" />
+              </div>
 
-            {/* Sidebar / Quick Actions */}
-            <div className="space-y-8">
-              <section>
-                <h2 className="text-xl font-bold text-white mb-6">Quick Access</h2>
-                <div className="grid gap-4">
-                  <ActionCard 
-                    title="AI Clinical Consultation" 
-                    desc="Describe symptoms and receive structured guidance" 
-                    link="/chatbot" 
-                    icon="💬"
-                    gradient="from-lime-600 to-emerald-600"
-                  />
-                  <ActionCard 
-                    title="Medical Report Analysis" 
-                    desc="Upload and interpret X-rays, labs & imaging" 
-                    link="/medical-vision" 
-                    icon="📸"
-                    gradient="from-emerald-600 to-teal-600"
-                  />
-                  <ActionCard 
-                    title="Specialist Appointment" 
-                    desc="Connect with qualified medical specialists" 
-                    link="/appointments" 
-                    icon="📅"
-                    gradient="from-teal-600 to-cyan-600"
-                  />
-                </div>
-              </section>
-
-              {/* Security Health */}
-              <Card className="glass-card p-6 border-white/10 bg-white/[0.02]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-10 w-10 rounded-full bg-lime-500/10 flex items-center justify-center text-lime-400">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
+              <div className="mt-12 p-8 rounded-[32px] bg-gradient-to-br from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20">
+                <div className="flex items-start gap-6">
+                  <div className="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shrink-0">
+                    <ShieldCheck size={24} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white">HIPAA-Compliant Security</h3>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">End-to-End Encryption Active</p>
+                    <h4 className="text-xl font-bold text-white mb-2">Privacy First Policy</h4>
+                    <p className="text-slate-400 leading-relaxed">
+                      We never sell your health data. MedSecure AI is built on the principle of data sovereignty — you own your data and control who can see it.
+                    </p>
+                    <Button className="mt-6 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl">Download Privacy Report</Button>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  All medical data is encrypted at rest and in transit, adhering to MedSecure AI privacy and data protection standards. Your full consultation history is accessible only to you.
-                </p>
-              </Card>
-            </div>
-          </div>
+              </div>
+            </motion.div>
+          )}
         </div>
       </main>
     </div>
   );
 }
 
+function TabButton({ active, onClick, label }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`px-6 py-2 rounded-full text-sm font-black transition-all whitespace-nowrap ${
+        active ? "bg-lime-500 text-black shadow-lg shadow-lime-500/20" : "text-slate-500 hover:text-white"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function SecurityOption({ icon, title, desc, status, button }) {
+  return (
+    <Card className="p-6 glass-card border-white/10 flex items-center justify-between gap-6">
+      <div className="flex items-center gap-6">
+        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">{icon}</div>
+        <div>
+          <h4 className="text-lg font-bold text-white">{title}</h4>
+          <p className="text-sm text-slate-500 mt-1">{desc}</p>
+        </div>
+      </div>
+      {status && (
+        <span className="px-4 py-1.5 rounded-full bg-lime-500/10 text-lime-400 text-xs font-black uppercase tracking-widest border border-lime-500/20">
+          {status}
+        </span>
+      )}
+      {button && (
+        <Button variant="outline" className="border-white/10 rounded-xl text-xs font-bold uppercase tracking-widest text-slate-300">
+          {button}
+        </Button>
+      )}
+    </Card>
+  );
+}
+
 function StatCard({ label, value, icon, color }) {
   const colors = {
-    lime: "border-lime-500/20 bg-lime-500/5 text-lime-400",
-    emerald: "border-emerald-500/20 bg-emerald-500/5 text-emerald-400",
-    blue: "border-blue-500/20 bg-blue-500/5 text-blue-400",
-    indigo: "border-indigo-500/20 bg-indigo-500/5 text-indigo-400",
+    lime: "text-lime-400 border-lime-500/20",
+    emerald: "text-emerald-400 border-emerald-500/20",
+    cyan: "text-cyan-400 border-cyan-500/20",
+    indigo: "text-indigo-400 border-indigo-500/20",
   };
-
   return (
-    <Card className={`p-6 border ${colors[color]} glass-card`}>
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-2xl">{icon}</span>
-        <div className="h-2 w-2 rounded-full bg-current animate-pulse opacity-50" />
+    <Card className={`p-6 glass-card-premium border ${colors[color]} group relative overflow-hidden`}>
+      <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center transition-transform group-hover:scale-110">{icon}</div>
+        <div className="h-2 w-2 rounded-full bg-current animate-pulse shadow-[0_0_8px_currentColor]" />
       </div>
-      <p className="text-3xl font-bold text-white mb-1">{value}</p>
-      <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">{label}</p>
+      <p className="text-3xl font-black text-white mb-1 relative z-10">{value}</p>
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50 relative z-10">{label}</p>
+      <div className={`absolute -bottom-4 -right-4 h-20 w-20 rounded-full blur-[40px] opacity-20 ${color === 'lime' ? 'bg-lime-500' : color === 'emerald' ? 'bg-emerald-500' : color === 'cyan' ? 'bg-cyan-500' : 'bg-indigo-500'}`} />
     </Card>
   );
 }
 
 function MedicationCard({ med }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-5 transition-all hover:bg-white/[0.04] hover:border-lime-500/20">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-lime-500/10 flex items-center justify-center text-lime-400 text-xl border border-lime-500/10">
-            💊
-          </div>
+    <div className="group relative overflow-hidden rounded-3xl border border-white/5 bg-white/[0.02] p-6 transition-all hover:bg-white/[0.05] hover:border-lime-500/30 glass-card-premium">
+      <div className="flex items-center justify-between gap-4 relative z-10">
+        <div className="flex items-center gap-5">
+          <div className="h-14 w-14 rounded-2xl bg-lime-500/10 flex items-center justify-center text-lime-400 text-2xl border border-lime-500/10 group-hover:scale-110 transition-transform">💊</div>
           <div>
-            <h4 className="font-bold text-white">{med.name}</h4>
-            <div className="flex items-center gap-3 mt-1">
-              <span className="text-xs text-slate-400">{med.dosage}</span>
+            <h4 className="text-lg font-black text-white group-hover:text-lime-400 transition-colors">{med.name}</h4>
+            <div className="flex items-center gap-3 mt-1.5">
+              <span className="text-xs font-medium text-slate-400">{med.dosage}</span>
               <span className="h-1 w-1 rounded-full bg-slate-700" />
-              <span className="text-xs text-lime-400 font-medium">{med.frequency}</span>
+              <span className="text-xs text-lime-400 font-black uppercase tracking-widest">{med.frequency}</span>
             </div>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Next Dose</p>
-          <p className="text-sm font-medium text-white">8:00 AM</p>
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1.5">Next Interval</p>
+          <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white inline-block">8:00 AM</div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function DiagnosisTimelineItem({ diagnosis }) {
-  return (
-    <div className="relative pl-8 pb-8 border-l border-white/10 last:pb-0">
-      <div className="absolute left-[-5px] top-0 h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-      <div className="text-xs text-slate-500 mb-2">
-        {new Date(diagnosis.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-      </div>
-      <Card className="glass-card p-4 border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="font-bold text-white">{diagnosis.predictedDisease}</h4>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            {Math.round(diagnosis.confidence * 100)}% Confidence
-          </span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {diagnosis.symptoms.slice(0, 3).map((s, idx) => (
-            <span key={idx} className="text-[10px] text-slate-400 px-2 py-1 rounded-md bg-white/5 border border-white/10">
-              {s}
-            </span>
-          ))}
-        </div>
-      </Card>
+      <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-lime-500/50 group-hover:w-full transition-all duration-700" />
     </div>
   );
 }
@@ -282,17 +268,19 @@ function DiagnosisTimelineItem({ diagnosis }) {
 function ActionCard({ title, desc, link, icon, gradient }) {
   return (
     <Link href={link}>
-      <div className="group relative overflow-hidden rounded-2xl border border-white/10 p-1 transition-all hover:scale-[1.02] active:scale-[0.98]">
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 group-hover:opacity-30 transition-opacity`} />
-        <div className="relative bg-[#111] p-5 rounded-[14px] flex items-center gap-4">
-          <div className="text-2xl">{icon}</div>
-          <div>
-            <h4 className="font-bold text-white group-hover:text-lime-400 transition-colors">{title}</h4>
-            <p className="text-xs text-slate-500">{desc}</p>
+      <div className="group relative overflow-hidden rounded-3xl border border-white/10 p-1 transition-all hover:scale-[1.03] active:scale-[0.98] shadow-2xl">
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 group-hover:opacity-40 transition-opacity blur-xl`} />
+        <div className="relative bg-[#0a0a0a]/80 backdrop-blur-xl p-6 rounded-[22px] flex items-center gap-5 border border-white/5">
+          <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center text-3xl group-hover:rotate-12 transition-transform">{icon}</div>
+          <div className="flex-grow">
+            <h4 className="text-lg font-black text-white group-hover:text-lime-400 transition-colors leading-tight">{title}</h4>
+            <p className="text-xs text-slate-500 font-medium mt-1">{desc}</p>
           </div>
-          <svg className="h-5 w-5 ml-auto text-slate-700 group-hover:text-white transition-all transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-lime-500 group-hover:text-black transition-all">
+            <svg className="h-4 w-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
         </div>
       </div>
     </Link>
@@ -301,11 +289,14 @@ function ActionCard({ title, desc, link, icon, gradient }) {
 
 function EmptyState({ title, description, actionText, actionLink }) {
   return (
-    <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-white/10 rounded-3xl bg-white/[0.01]">
-      <p className="text-lg font-bold text-white mb-2">{title}</p>
-      <p className="text-sm text-slate-500 mb-6 max-w-xs">{description}</p>
+    <div className="flex flex-col items-center justify-center p-16 text-center border border-dashed border-white/10 rounded-[40px] bg-white/[0.01] group hover:bg-white/[0.02] transition-all">
+      <div className="h-20 w-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+        <Activity className="h-10 w-10 text-slate-600" />
+      </div>
+      <p className="text-xl font-black text-white mb-3 tracking-tight">{title}</p>
+      <p className="text-sm text-slate-500 mb-8 max-w-xs leading-relaxed font-medium">{description}</p>
       <Link href={actionLink}>
-        <Button variant="outline" className="border-white/10 text-white hover:bg-white/5">
+        <Button className="h-12 px-8 rounded-2xl bg-white text-black font-black hover:bg-lime-400 transition-colors uppercase tracking-widest text-[10px]">
           {actionText}
         </Button>
       </Link>

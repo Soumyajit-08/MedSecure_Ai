@@ -3,16 +3,9 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-
 import { Button } from "@/components/ui/button";
 import { MotionCard, FloatingElement } from "@/components/ui/motion-card";
-
-const menuItems = [
-  { label: "Home", href: "#home", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-  { label: "Search", href: "#search", icon: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" },
-  { label: "Chatbot", href: "#chatbot", icon: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" },
-  { label: "Safety", href: "#safety", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" }
-];
+import { useTranslation } from "react-i18next";
 
 const patientTools = [
   {
@@ -72,6 +65,8 @@ const patientMetrics = [
 ];
 
 export default function HomePage() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -93,21 +88,9 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-transparent text-slate-100 pb-20 md:pb-0">
       <Header />
-      
-      {/* Mobile Bottom Nav */}
-      <nav className="bottom-nav">
-        {menuItems.map((item) => (
-          <a key={item.href} href={item.href} className="flex flex-col items-center gap-1 text-[10px] font-medium text-slate-400 transition-colors hover:text-cyan-400 active:scale-90">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-            </svg>
-            <span>{item.label}</span>
-          </a>
-        ))}
-      </nav>
 
+      {/* Hero Section */}
       <section id="home" className="hero-glow relative overflow-hidden border-b border-white/10">
-        {/* 3D Floating Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           <FloatingElement className="absolute top-[15%] left-[5%] w-32 h-32 bg-lime-500/10 rounded-full blur-3xl" duration={6} />
           <FloatingElement className="absolute bottom-[20%] right-[10%] w-48 h-48 bg-lime-500/10 rounded-full blur-3xl" duration={8} delay={1} />
@@ -116,21 +99,21 @@ export default function HomePage() {
         <div className="relative mx-auto grid min-h-[84vh] max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1fr_0.92fr] md:px-8">
           <div className="animate-fade-up flex flex-col justify-center mobile-stagger">
             <p className="mb-4 w-fit rounded-full border border-lime-300/25 bg-lime-300/10 px-3 py-1 text-sm font-medium tracking-wide text-lime-100">
-              AI-Powered Patient Health Platform
+              {t("home.badge")}
             </p>
-            <h1 className="max-w-4xl bg-gradient-to-br from-white via-white to-white/90 bg-clip-text text-4xl font-bold leading-[1.15] tracking-tight text-transparent md:text-6xl lg:text-7xl pb-2 pr-1">
-              Intelligent symptom analysis. Trusted clinical guidance.
+            <h1 className="max-w-4xl bg-gradient-to-br from-white via-white to-white/70 bg-clip-text text-4xl font-extrabold leading-[1.1] tracking-tight text-transparent md:text-5xl lg:text-6xl pb-4">
+              {t("home.title")}
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-300 md:text-lg">
-              MedSecure AI is a patient-first digital health platform offering structured symptom assessment, AI-driven consultation, and secure medical record management.
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 md:text-xl">
+              {t("home.desc")}
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <div className="mt-10 flex flex-col sm:flex-row gap-5">
               <a href="#search" className="w-full sm:w-auto">
-                <Button className="w-full px-8 py-6 text-lg bg-lime-600 hover:bg-lime-500 shadow-xl shadow-lime-900/20 border-none">Assess Symptoms</Button>
+                <Button className="btn-premium w-full px-10 py-8 text-xl bg-lime-600 hover:bg-lime-500 shadow-2xl shadow-lime-900/30 border-none rounded-[20px]">{t("home.assess")}</Button>
               </a>
               <a href="#chatbot" className="w-full sm:w-auto">
-                <Button className="w-full px-8 py-6 text-lg bg-gradient-to-r from-lime-600 to-emerald-600 hover:from-lime-500 hover:to-emerald-500 shadow-xl shadow-lime-900/20 border-none">
-                  Start Consultation
+                <Button className="btn-premium w-full px-10 py-8 text-xl bg-white/[0.03] hover:bg-white/[0.08] text-white border border-white/10 backdrop-blur-xl rounded-[20px]">
+                  {t("home.consult")}
                 </Button>
               </a>
             </div>
@@ -164,8 +147,7 @@ export default function HomePage() {
         </div>
       </section>
 
-
-
+      {/* AI Chatbot Section */}
       <section id="chatbot" className="border-b border-white/10 bg-[#222222] px-5 py-20 md:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.88fr_1.12fr] mobile-stagger">
           <div>
@@ -197,6 +179,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Clinical Toolset Section */}
       <section id="tools" className="border-b border-white/10 bg-[#181818] px-5 py-20 md:px-8">
         <div className="mx-auto max-w-7xl mobile-stagger">
           <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
@@ -239,7 +222,7 @@ export default function HomePage() {
               {patientTools.map((tool) => (
                 <MotionCard key={tool.title} className="h-full">
                   <Link href={tool.href} className="group block h-full">
-                    <div className="h-full rounded-2xl border border-white/10 bg-[#242424] p-5 transition-all duration-300 hover:border-lime-400/40 hover:bg-[#282f24]">
+                    <div className="h-full rounded-3xl border border-white/10 bg-[#121212]/50 backdrop-blur-sm p-6 transition-all duration-500 hover:border-lime-400/40 hover:bg-[#181818] hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-lime-400/20 bg-lime-400/10">
                           <svg className="h-5 w-5 text-lime-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -300,15 +283,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Safety Section */}
       <section id="safety" className="bg-transparent px-5 py-20 md:px-8 mb-10">
         <div className="glass-card mx-auto max-w-5xl p-8 md:p-12 relative overflow-hidden mobile-stagger">
           <div className="absolute top-0 left-0 w-1 h-full bg-lime-500" />
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">Patient Safety & Compliance</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">Patient Safety &amp; Compliance</p>
           <h2 className="mt-4 text-3xl font-bold text-white md:text-4xl">
-            Clinical Guidelines & Reliability Standards
+            Clinical Guidelines &amp; Reliability Standards
           </h2>
           <p className="mt-6 text-base leading-relaxed text-slate-400 italic">
-            "MedSecure AI is designed to support patient awareness and facilitate preliminary health assessment. It does not constitute, nor should it be interpreted as, a professional clinical diagnosis. For urgent or emergency symptoms, please seek immediate medical attention from a qualified healthcare provider."
+            &quot;MedSecure AI is designed to support patient awareness and facilitate preliminary health assessment. It does not constitute, nor should it be interpreted as, a professional clinical diagnosis. For urgent or emergency symptoms, please seek immediate medical attention from a qualified healthcare provider.&quot;
           </p>
         </div>
       </section>

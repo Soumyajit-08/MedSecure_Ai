@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Header } from "@/components/layout/header";
 import { authApi } from "@/services/api";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function SignupPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleSignup = async (event) => {
     event.preventDefault();
@@ -30,7 +33,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await signup({ ...form, role: "patient" });
-      toast.success("Verification code dispatched. Please check your inbox.");
+      toast.success("Security verification code dispatched. Please check your secure inbox.");
       setStep(2); 
     } catch (err) {
       console.error("❌ Signup Error:", err.response?.data || err.message);
@@ -71,7 +74,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const { data: response } = await authApi.verifyEmail({ email: form.email, otp: otpString });
-      toast.success("Account registered and verified successfully. Welcome to MedSecure AI!");
+      toast.success("Identity verified. Your patient account has been successfully activated.");
       
       const { data } = response;
       if (data?.accessToken) {
@@ -133,14 +136,23 @@ export default function SignupPage() {
 
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-lime-400 ml-1">Password</label>
-                    <Input
-                      value={form.password}
-                      onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))}
-                      type="password"
-                      placeholder="Create a strong password"
-                      required
-                      className="bg-white/5 border-white/10 py-6 focus:border-lime-400/50 transition-all rounded-xl"
-                    />
+                    <div className="relative group">
+                      <Input
+                        value={form.password}
+                        onChange={(e) => setForm((v) => ({ ...v, password: e.target.value }))}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Create a strong password"
+                        required
+                        className="bg-white/5 border-white/10 py-6 pr-12 focus:border-lime-400/50 transition-all rounded-xl w-full"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-lime-400 transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
 
                   {error && (

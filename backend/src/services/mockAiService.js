@@ -128,11 +128,34 @@ This is AI guidance, not a final medical diagnosis. Please consult a qualified d
 
 export const getMockVisionResult = async (file) => {
   return {
+    "patient_details": {
+      "name": "John Doe",
+      "age": "45",
+      "gender": "Male",
+      "other": "Weight: 78kg"
+    },
+    "summary": "The document suggests a mild respiratory infection. The markers indicate some inflammation, but nothing that requires emergency care at this stage. It is recommended to follow the prescribed course of antibiotics and rest.",
+    "problem": "Mild Bacterial Respiratory Infection",
+    "medicines": [
+      { 
+        "name": "Amoxicillin 500mg", 
+        "usage": "Take 1 capsule three times a day for 7 days after meals", 
+        "purpose": "To treat the bacterial infection in your respiratory tract." 
+      },
+      { 
+        "name": "Paracetamol 650mg", 
+        "usage": "Take 1 tablet every 6 hours if you have fever or body pain", 
+        "purpose": "To reduce fever and relieve body aches." 
+      }
+    ],
+    "referral": {
+      "specialist": "Pulmonologist",
+      "reason": "Recommended if cough persists for more than 2 weeks or breathing difficulty increases."
+    },
+    "urgency": "Medium",
+    "key_metrics": ["SpO2: 96%", "Temperature: 101.2 F", "Heart Rate: 88 bpm"],
     "simple_explanation": "The uploaded file is valid, but the external AI scanner is not available right now. Please review the report values with a qualified doctor.",
     "key_findings": ["Medical file uploaded", "Detailed AI scan unavailable in fallback mode", "Doctor review recommended"],
-    "medicines": [
-      { "name": "Doctor-prescribed treatment only", "purpose": "Final treatment depends on report findings", "caution": "Do not self-medicate from AI guidance." }
-    ],
     "specialist_type": "General Physician",
     "doctor_role": "Primary Care Consultant",
     "maps_search_link": "https://www.google.com/maps/search/General+Physician+near+me",
@@ -140,3 +163,4 @@ export const getMockVisionResult = async (file) => {
     "recommendations": ["Share exact report values", "Consult a doctor for final diagnosis and treatment plan"]
   };
 };
+

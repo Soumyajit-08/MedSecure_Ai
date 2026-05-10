@@ -83,13 +83,14 @@ export const signup = async (req, res) => {
   }
 
   try {
+    const firstName = user.fullName.split(" ")[0];
     await sendEmail({
       email: user.email,
       subject: "MedSecure AI - Verify Your Email",
       message: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #0891b2;">Welcome to MedSecure AI</h2>
-          <p>Thank you for joining our platform. To complete your registration, please use the verification code below:</p>
+          <h2 style="color: #0891b2;">Hello, ${firstName}!</h2>
+          <p>Welcome to MedSecure AI. To complete your registration, please use the verification code below:</p>
           <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #0e7490; margin: 20px 0;">
             ${otp}
           </div>
@@ -99,6 +100,8 @@ export const signup = async (req, res) => {
         </div>
       `
     });
+
+
   } catch (err) {
     console.error("Failed to send verification email:", err);
   }
