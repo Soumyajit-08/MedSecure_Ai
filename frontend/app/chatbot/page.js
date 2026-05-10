@@ -242,7 +242,7 @@ function ChatbotContent() {
             <h1 className="mt-2 text-4xl font-bold text-white md:text-5xl">
               {t("chatbot.title")}
             </h1>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-400">
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-400">
               {t("chatbot.desc")}
             </p>
           </section>
