@@ -8,7 +8,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-4 lg:col-span-1">
-            <h3 className="text-xl font-bold text-white">MadSecure AI</h3>
+            <h3 className="text-xl font-bold text-white">MedSecure AI</h3>
             <p className="text-sm leading-6 text-slate-400 max-w-xs">
               A patient-first digital health platform providing AI-driven symptom assessment, medical report analysis, specialist guidance, and secure health record management.
             </p>
@@ -66,7 +66,7 @@ export function Footer() {
         
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
-            &copy; {currentYear} MadSecure AI. All rights reserved. For educational and informational purposes only.
+            &copy; {currentYear} MedSecure AI. All rights reserved. For educational and informational purposes only.
           </p>
           <div className="flex gap-6 text-xs text-slate-500">
             <span className="hover:text-lime-400 transition-colors cursor-pointer">Privacy Policy</span>

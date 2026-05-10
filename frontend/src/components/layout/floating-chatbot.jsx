@@ -11,7 +11,7 @@ export function FloatingChatbot() {
   if (pathname === "/chatbot") return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[60]">
+    <div className="fixed bottom-32 md:bottom-6 right-6 z-[60]">
       <Link href="/chatbot">
         <motion.button
           whileHover={{ scale: 1.05 }}

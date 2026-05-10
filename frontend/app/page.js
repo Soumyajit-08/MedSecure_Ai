@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { IllnessSearch } from "@/components/home/illness-search";
+
 import { Button } from "@/components/ui/button";
 import { MotionCard, FloatingElement } from "@/components/ui/motion-card";
 
@@ -122,7 +122,7 @@ export default function HomePage() {
               Intelligent symptom analysis. Trusted clinical guidance.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-300 md:text-lg">
-              MadSecure AI is a patient-first digital health platform offering structured symptom assessment, AI-driven consultation, and secure medical record management.
+              MedSecure AI is a patient-first digital health platform offering structured symptom assessment, AI-driven consultation, and secure medical record management.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <a href="#search" className="w-full sm:w-auto">
@@ -164,19 +164,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="search" className="border-b border-white/10 bg-[#181818] px-5 py-20 md:px-8 relative overflow-hidden group">
-        <div className="mx-auto max-w-7xl mobile-stagger">
-          <div className="max-w-3xl mb-12">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-lime-400">Clinical Symptom Search</p>
-            <h2 className="mt-4 text-3xl font-bold text-white md:text-5xl lg:text-6xl tracking-tight">
-              Your assessment begins with a <span className="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-500">single query.</span>
-            </h2>
-          </div>
-          <div className="mt-8">
-            <IllnessSearch />
-          </div>
-        </div>
-      </section>
+
 
       <section id="chatbot" className="border-b border-white/10 bg-[#222222] px-5 py-20 md:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.88fr_1.12fr] mobile-stagger">
@@ -201,7 +189,7 @@ export default function HomePage() {
                 <p className="text-sm leading-6 text-slate-100">How long should a fever last?</p>
               </div>
               <div className="ml-auto max-w-[85%] rounded-2xl border border-lime-300/20 bg-lime-400/10 p-4">
-                <p className="text-[10px] uppercase tracking-wider text-lime-500 mb-1 text-right">MadSecure AI Bot</p>
+                <p className="text-[10px] uppercase tracking-wider text-lime-500 mb-1 text-right">MedSecure AI Bot</p>
                 <p className="text-sm leading-6 text-slate-100">Typical viral fevers last 3-5 days. Monitor temperature and hydration.</p>
               </div>
             </div>
@@ -291,7 +279,7 @@ export default function HomePage() {
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-lime-300">Pre-Consultation Preparation</p>
                   <h3 className="mt-2 text-2xl font-bold text-white">Arrive informed. Consult with confidence.</h3>
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-                    MadSecure AI structures your health data — symptoms, report values, medication history, and specialist requirements — so every clinical consultation is more productive and informed.
+                    MedSecure AI structures your health data — symptoms, report values, medication history, and specialist requirements — so every clinical consultation is more productive and informed.
                   </p>
                 </div>
                 <Link href="/chatbot" className="shrink-0">
@@ -305,7 +293,7 @@ export default function HomePage() {
             <div className="rounded-3xl border border-amber-300/20 bg-amber-300/[0.06] p-6 md:p-8">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-200">Clinical Disclaimer</p>
               <p className="mt-3 text-sm leading-6 text-amber-50/80">
-                All medication information provided by MadSecure AI is strictly for educational awareness. Definitive prescriptions, therapeutic dosages, and treatment protocols must be determined exclusively by a licensed medical professional.
+                All medication information provided by MedSecure AI is strictly for educational awareness. Definitive prescriptions, therapeutic dosages, and treatment protocols must be determined exclusively by a licensed medical professional.
               </p>
             </div>
           </div>
@@ -320,7 +308,7 @@ export default function HomePage() {
             Clinical Guidelines & Reliability Standards
           </h2>
           <p className="mt-6 text-base leading-relaxed text-slate-400 italic">
-            "MadSecure AI is designed to support patient awareness and facilitate preliminary health assessment. It does not constitute, nor should it be interpreted as, a professional clinical diagnosis. For urgent or emergency symptoms, please seek immediate medical attention from a qualified healthcare provider."
+            "MedSecure AI is designed to support patient awareness and facilitate preliminary health assessment. It does not constitute, nor should it be interpreted as, a professional clinical diagnosis. For urgent or emergency symptoms, please seek immediate medical attention from a qualified healthcare provider."
           </p>
         </div>
       </section>

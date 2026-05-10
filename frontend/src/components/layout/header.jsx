@@ -86,8 +86,8 @@ export function Header() {
           </button>
 
           <Link href="/" className="flex items-center gap-2 text-lg md:text-xl font-bold tracking-tight text-white group">
-            <img src="/icon.svg" alt="MadSecure AI Logo" className="h-7 w-7 md:h-9 md:w-9 transition-transform duration-300 group-hover:rotate-12" />
-            <span className="hidden xs:inline sm:inline">MadSecure AI</span>
+            <img src="/icon.svg" alt="MedSecure AI Logo" className="h-7 w-7 md:h-9 md:w-9 transition-transform duration-300 group-hover:rotate-12" />
+            <span className="hidden xs:inline sm:inline">MedSecure AI</span>
           </Link>
         </div>
 

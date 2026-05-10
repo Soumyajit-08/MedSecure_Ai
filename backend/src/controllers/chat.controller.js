@@ -15,7 +15,7 @@ const mockChatHistory = [];
 const isDbConnected = () => mongoose.connection.readyState === 1;
 
 const buildPatientFriendlyPrompt = ({ context, message, hasFile }) => `
-You are MadSecure AI, a careful patient-facing medical assistant.
+You are MedSecure AI, a careful patient-facing medical assistant.
 
 Write the answer in very simple, easy English for a non-medical user. The user should understand what is happening, why it matters, and what to do next.
 
@@ -235,7 +235,7 @@ export const chat = async (req, res) => {
         const completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
-            { role: "system", content: "You are MadSecure AI. Give patient-friendly medical guidance with Summary, Key Findings, Treatment / Next Steps, and When To Seek Urgent Care sections. Do not give a final diagnosis or exact medicine dosages." },
+            { role: "system", content: "You are MedSecure AI. Give patient-friendly medical guidance with Summary, Key Findings, Treatment / Next Steps, and When To Seek Urgent Care sections. Do not give a final diagnosis or exact medicine dosages." },
             { role: "user", content: buildPatientFriendlyPrompt({ context, message, hasFile: false }) }
           ],
         });

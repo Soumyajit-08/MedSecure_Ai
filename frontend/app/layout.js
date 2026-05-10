@@ -6,7 +6,7 @@ import { EntranceReveal } from "@/components/ui/entrance-reveal";
 import { FloatingChatbot } from "@/components/layout/floating-chatbot";
 
 export const metadata = {
-  title: "MadSecure AI - Secure Healthcare Platform",
+  title: "MedSecure AI - Secure Healthcare Platform",
   description: "Secure Healthcare AI platform for patient care and data security",
   icons: {
     icon: "/icon.svg"

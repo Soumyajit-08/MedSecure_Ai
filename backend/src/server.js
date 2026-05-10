@@ -30,7 +30,7 @@ const bootstrap = async () => {
   }
 
   const server = app.listen(env.port, () => {
-    console.log(`MadSecure Backend running on port ${env.port}`);
+    console.log(`MedSecure Backend running on port ${env.port}`);
     if (!dbConnected) {
       console.log("Warning: DB-dependent endpoints will fail until MONGO_URI is fixed.");
     }

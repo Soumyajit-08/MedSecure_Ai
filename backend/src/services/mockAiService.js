@@ -1,5 +1,5 @@
 /**
- * Mock AI Service for MadSecure AI.
+ * Mock AI Service for MedSecure AI.
  * Used when external AI quota/API access is unavailable.
  */
 
