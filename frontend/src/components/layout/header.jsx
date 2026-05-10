@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,7 +18,12 @@ export function Header() {
   const pathname = usePathname();
   const { user, logout, loading } = useAuth();
   const [showProfile, setShowProfile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const profileRef = useClickOutside(() => setShowProfile(false));
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: historyData } = useQuery({
     queryKey: ["header-chat-history"],
@@ -115,13 +120,13 @@ export function Header() {
               <div className="flex items-center gap-4 md:gap-7 relative pr-2">
                 <div className="hidden md:flex items-center gap-6 mr-4 border-r border-white/10 pr-6">
                   <Link href="/chatbot" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-lime-400 transition-colors">
-                    {t("nav.chatbot")}
+                    {mounted ? t("nav.chatbot") : "Chatbot"}
                   </Link>
                   <Link href="/prescription-analyzer" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-lime-400 transition-colors">
-                    {t("nav.analyzer")}
+                    {mounted ? t("nav.analyzer") : "Analyzer"}
                   </Link>
                   <Link href="/dashboard" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-lime-400 transition-colors">
-                    {t("nav.dashboard")}
+                    {mounted ? t("nav.dashboard") : "Dashboard"}
                   </Link>
                 </div>
 
@@ -152,13 +157,13 @@ export function Header() {
                         {/* Chat History */}
                         <div className="mb-4">
                           <div className="flex items-center justify-between mb-2 px-1">
-                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{t("nav.recent_chats")}</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{mounted ? t("nav.recent_chats") : "Recent Chats"}</p>
                             {history.length > 0 && (
                               <button 
                                 onClick={handleClearHistory}
                                 className="text-[9px] font-bold text-slate-600 hover:text-red-400 transition-colors uppercase tracking-tighter"
                               >
-                                {t("nav.clear_all")}
+                                {mounted ? t("nav.clear_all") : "Clear All"}
                               </button>
                             )}
                           </div>
@@ -187,7 +192,7 @@ export function Header() {
                                 </div>
                               ))
                             ) : (
-                              <p className="text-center py-4 text-[10px] text-slate-600 italic">{t("nav.no_recent_chats")}</p>
+                              <p className="text-center py-4 text-[10px] text-slate-600 italic">{mounted ? t("nav.no_recent_chats") : "No recent chats"}</p>
                             )}
                           </div>
                         </div>
@@ -200,7 +205,7 @@ export function Header() {
                             <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                             </svg>
-                            {t("nav.switch_account")}
+                            {mounted ? t("nav.switch_account") : "Switch Account"}
                           </button>
                           
                           <button 
@@ -210,7 +215,7 @@ export function Header() {
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            {t("nav.logout")}
+                            {mounted ? t("nav.logout") : "Logout"}
                           </button>
                         </div>
                       </motion.div>
@@ -222,18 +227,18 @@ export function Header() {
               <div className="flex items-center gap-2 md:gap-6">
                 <div className="hidden md:flex items-center gap-6 mr-2 border-r border-white/10 pr-6">
                   <Link href="/chatbot" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-lime-400 transition-colors">
-                    {t("nav.chatbot")}
+                    {mounted ? t("nav.chatbot") : "Chatbot"}
                   </Link>
                   <Link href="/prescription-analyzer" className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-lime-400 transition-colors">
-                    {t("nav.analyzer")}
+                    {mounted ? t("nav.analyzer") : "Analyzer"}
                   </Link>
                 </div>
                 <Link href="/login" className="text-sm font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors px-2">
-                  {t("nav.login")}
+                  {mounted ? t("nav.login") : "Login"}
                 </Link>
                 <Link href="/signup">
                   <button className="rounded-2xl bg-white px-6 py-2.5 text-xs font-black uppercase tracking-widest text-black transition hover:bg-lime-400 shadow-xl shadow-lime-900/10 border-none">
-                    {t("nav.join_now")}
+                    {mounted ? t("nav.join_now") : "Join Now"}
                   </button>
                 </Link>
               </div>
