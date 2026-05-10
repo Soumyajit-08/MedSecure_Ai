@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 import { chatbotApi } from "@/services/api";
@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 export function Header() {
   const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout, loading } = useAuth();
   const [showProfile, setShowProfile] = useState(false);
   const profileRef = useClickOutside(() => setShowProfile(false));
@@ -79,20 +80,22 @@ export function Header() {
 
         {/* Left Side: Back Button & Logo */}
         <div className="flex items-center gap-3 md:gap-6">
-          <button 
-            onClick={() => router.back()}
-            className="group flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all active:scale-90"
-            aria-label="Go back"
-          >
-            <svg 
-              className="h-4 w-4 md:h-5 md:w-5 text-slate-300 group-hover:text-lime-400 transition-colors" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
+          {pathname !== "/" && (
+            <button 
+              onClick={() => router.back()}
+              className="group flex items-center justify-center h-9 w-9 md:h-10 md:w-10 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all active:scale-90"
+              aria-label="Go back"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
+              <svg 
+                className="h-4 w-4 md:h-5 md:w-5 text-slate-300 group-hover:text-lime-400 transition-colors" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+          )}
 
           <Link href="/" className="flex items-center gap-2.5 text-xl font-black tracking-tight text-white group">
             <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 transition-all group-hover:border-lime-500/50 group-hover:bg-lime-500/10">
