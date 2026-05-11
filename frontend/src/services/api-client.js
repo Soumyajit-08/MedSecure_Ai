@@ -1,6 +1,13 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const LOCAL_API_BASE_URL = "http://localhost:5000/api/v1";
+const PRODUCTION_API_BASE_URL = "https://medsecure-ai-1.onrender.com/api/v1";
+
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? LOCAL_API_BASE_URL
+    : configuredApiUrl || PRODUCTION_API_BASE_URL;
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL

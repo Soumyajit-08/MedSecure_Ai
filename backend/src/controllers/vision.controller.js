@@ -3,6 +3,32 @@ import { getMockVisionResult } from "../services/mockAiService.js";
 
 const isValidKey = (key) => key && key.length > 20 && !key.includes("paste_your");
 const genAI = isValidKey(process.env.GEMINI_API_KEY) ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+const GEMINI_MODEL_CANDIDATES = (process.env.GEMINI_MODEL || "gemini-2.0-flash,gemini-2.5-flash,gemini-flash-latest")
+  .split(",")
+  .map((model) => model.trim())
+  .filter(Boolean);
+
+const parseGeminiJson = (responseText) => {
+  const cleanedJson = responseText.replace(/```json|```/g, "").trim();
+  return JSON.parse(cleanedJson);
+};
+
+const generateVisionJson = async (prompt, imageData) => {
+  let lastError;
+
+  for (const modelName of GEMINI_MODEL_CANDIDATES) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent([prompt, imageData]);
+      return parseGeminiJson(result.response.text());
+    } catch (error) {
+      lastError = error;
+      console.warn(`Gemini vision model failed (${modelName}): ${error.message}`);
+    }
+  }
+
+  throw lastError;
+};
 
 export const processMedicalVision = async (req, res) => {
   try {
@@ -22,8 +48,6 @@ export const processMedicalVision = async (req, res) => {
       },
     };
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
     const prompt = `
       Analyze this medical image/PDF and explain in SIMPLE, EASY language.
       Return JSON:
@@ -39,10 +63,7 @@ export const processMedicalVision = async (req, res) => {
       }
     `;
 
-    const result = await model.generateContent([prompt, imageData]);
-    const responseText = result.response.text();
-    const cleanedJson = responseText.replace(/```json|```/g, "").trim();
-    const data = JSON.parse(cleanedJson);
+    const data = await generateVisionJson(prompt, imageData);
 
     res.status(200).json({ success: true, data: data });
 
@@ -71,8 +92,6 @@ export const analyzePrescription = async (req, res) => {
         mimeType: req.file.mimetype,
       },
     };
-
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Use Flash for better availability
 
     const prompt = `
       Perform a deep clinical analysis of this medical document (prescription, blood test, X-ray, ECG, etc.).
@@ -105,10 +124,7 @@ export const analyzePrescription = async (req, res) => {
       CRITICAL: Use simple English that a non-medical person can easily understand.
     `;
 
-    const result = await model.generateContent([prompt, imageData]);
-    const responseText = result.response.text();
-    const cleanedJson = responseText.replace(/```json|```/g, "").trim();
-    const data = JSON.parse(cleanedJson);
+    const data = await generateVisionJson(prompt, imageData);
 
     res.status(200).json({ success: true, data: data });
 
@@ -118,4 +134,3 @@ export const analyzePrescription = async (req, res) => {
     res.status(200).json({ success: true, data: mockResult });
   }
 };
-

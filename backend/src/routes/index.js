@@ -31,13 +31,8 @@ router.use("/illness", illnessRoutes);
 // Routes below this line will use in-memory fallback if the database is disconnected
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
-import { analyzePrescription } from "../controllers/vision.controller.js";
-import multer from "multer";
-const upload = multer({ storage: multer.memoryStorage() });
-import { requireAuth } from "../middleware/auth.js";
 
 router.use("/predictions", diagnosisRoutes);
-router.post("/predictions/analyze-prescription", requireAuth, upload.single("image"), analyzePrescription);
 
 router.use("/chatbot", chatRoutes);
 router.use("/appointments", appointmentRoutes);

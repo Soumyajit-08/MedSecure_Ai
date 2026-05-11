@@ -14,10 +14,15 @@ router.post("/", requireAuth, createPrediction);
 router.get("/", requireAuth, listPredictions);
 router.post("/vision", requireAuth, upload.single("image"), processMedicalVision);
 router.post("/analyze-prescription", requireAuth, upload.single("image"), analyzePrescription);
-router.get("/check-route", (req, res) => res.json({ message: "Diagnosis router internal route working" }));
-router.post("/prescription-analyzer", requireAuth, upload.single("image"), analyzePrescription); // Fallback alias
-
-
+router.post("/prescription-analyzer", requireAuth, upload.single("image"), analyzePrescription);
+router.get("/check-route", (_req, res) => {
+  res.json({
+    success: true,
+    routes: [
+      "POST /api/v1/predictions/analyze-prescription",
+      "POST /api/v1/predictions/prescription-analyzer"
+    ]
+  });
+});
 
 export default router;
-
