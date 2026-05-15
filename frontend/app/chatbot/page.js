@@ -42,17 +42,6 @@ function ChatbotContent() {
     }
   };
 
-  const speak = (text) => {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   const chat = useMutation({
     mutationFn: (payload) => chatbotApi.chat(payload),
@@ -67,7 +56,6 @@ function ChatbotContent() {
           doctorRecommendation: response.data.data.doctorRecommendation
         }
       ]);
-      speak(botResponse);
       toast.success(`${firstName}, clinical analysis is complete. Review the summary below.`);
     },
 
