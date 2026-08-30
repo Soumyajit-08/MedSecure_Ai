@@ -112,7 +112,7 @@ export default function HomePage() {
                 <svg className="h-4 w-4 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
-                AWS Cloud Infrastructure
+                {/* AWS Cloud Infrastructure */}
               </span>
               <span className="inline-flex items-center gap-2 rounded-xl border border-lime-500/20 bg-lime-500/10 px-3 py-1.5 text-xs font-bold text-lime-400 backdrop-blur-md uppercase tracking-wider">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
